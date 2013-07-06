@@ -26,7 +26,7 @@
 //
 
 #import "AppDelegate.h"
-#import "MainViewController.h"
+#import "HtmlViewController.h"
 
 #ifdef CORDOVA_FRAMEWORK
     #import <Cordova/CDVPlugin.h>
@@ -39,7 +39,7 @@
 
 @implementation AppDelegate
 
-@synthesize window, viewController;
+@synthesize window, navigationController;
 
 - (id) init
 {	
@@ -73,63 +73,17 @@
     self.window = [[[UIWindow alloc] initWithFrame:screenBounds] autorelease];
     self.window.autoresizesSubviews = YES;
     
-    CGRect viewBounds = [[UIScreen mainScreen] applicationFrame];
+    HtmlViewController *viewController = [[[HtmlViewController alloc] init] autorelease];
+    viewController.useSplashScreen = NO;
+    viewController.wwwFolderName = @"10000011/www";
+    viewController.startPage = @"demo/index-alipay-native.html";
     
-    self.viewController = [[[MainViewController alloc] init] autorelease];
-    self.viewController.useSplashScreen = YES;
-    self.viewController.wwwFolderName = @"www";
-    self.viewController.startPage = @"index.html";
-    self.viewController.invokeString = invokeString;
-    self.viewController.view.frame = viewBounds;
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.window.rootViewController = self.navigationController;
     
-    // check whether the current orientation is supported: if it is, keep it, rather than forcing a rotation
-    BOOL forceStartupRotation = YES;
-    UIDeviceOrientation curDevOrientation = [[UIDevice currentDevice] orientation];
-    
-    if (UIDeviceOrientationUnknown == curDevOrientation) {
-        // UIDevice isn't firing orientation notifications yet… go look at the status bar
-        curDevOrientation = (UIDeviceOrientation)[[UIApplication sharedApplication] statusBarOrientation];
-    }
-    
-    if (UIDeviceOrientationIsValidInterfaceOrientation(curDevOrientation)) {
-        for (NSNumber *orient in self.viewController.supportedOrientations) {
-            if ([orient intValue] == curDevOrientation) {
-                forceStartupRotation = NO;
-                break;
-            }
-        }
-    } 
-    
-    if (forceStartupRotation) {
-        NSLog(@"supportedOrientations: %@", self.viewController.supportedOrientations);
-        // The first item in the supportedOrientations array is the start orientation (guaranteed to be at least Portrait)
-        UIInterfaceOrientation newOrient = [[self.viewController.supportedOrientations objectAtIndex:0] intValue];
-        NSLog(@"AppDelegate forcing status bar to: %d from: %d", newOrient, curDevOrientation);
-        [[UIApplication sharedApplication] setStatusBarOrientation:newOrient];
-    }
-    
-    [self.window addSubview:self.viewController.view];
     [self.window makeKeyAndVisible];
     
     return YES;
-}
-
-// this happens while we are running ( in the background, or from within our own app )
-// only valid if Portal-Info.plist specifies a protocol to handle
-- (BOOL) application:(UIApplication*)application handleOpenURL:(NSURL*)url 
-{
-    if (!url) { 
-        return NO; 
-    }
-    
-	// calls into javascript global function 'handleOpenURL'
-    NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
-    [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsString];
-    
-    // all plugins will get the notification, and their handlers will be called 
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
-    
-    return YES;    
 }
 
 - (void) dealloc

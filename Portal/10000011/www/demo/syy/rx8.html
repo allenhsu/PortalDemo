@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<!--
+    @author: 栋寒(zhenn) 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<meta name="left-bar-item" content="onclick=leftbar()" />
+<meta name="right-bar-item" content="title=往期开奖,onclick=rightbar()" />
+<title>十一运-任选八</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/bet.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone-localstorage.js"></script>
+<script charset="utf-8" src="../../js/config.js"></script>
+</head>
+
+<body>
+<section id="syy_rx8" class="manualBall temp">
+    <section id="selPlayType">
+        <div class="typeList" id="typeList">
+            <ul>
+                <li rel="rx2">任选二</li>
+                <li rel="rx3">任选三</li>
+                <li rel="rx4">任选四</li>
+                <li rel="rx5">任选五</li>
+                <li rel="rx6">任选六</li>
+                <li rel="rx7">任选七</li>
+				<li class="cur" rel="rx8">任选八</li>
+				<li rel="q1">前一</li>
+				<li rel="q2zhx">前二直选</li>
+				<li rel="q2zx">前二组选</li>
+				<li rel="q3zhx">前三直选</li>
+				<li rel="q3zx">前三组选</li>
+            </ul>
+            <span class="more"><img src="../../images/rightj.png" width="7" height="14" /></span>
+        </div>
+    </section>
+    
+    <!--选号球{{-->
+    <div id="Abacus" class="abacus short">
+        <div class="box">
+            <div class="hd"><span>摇一摇机选!</span><em>请选择8个号码</em></div>
+            <ul class="ballList red">
+                <li>01</li>
+                <li>02</li>
+                <li>03</li>
+                <li>04</li>
+                <li>05</li>
+                <li>06</li>
+                <li>07</li>
+                <li>08</li>
+                <li>09</li>
+                <li>10</li>
+                <li>11</li>
+            </ul>
+        </div>
+    </div>
+    <!--选号球}}-->
+
+	<div class="actarea">
+    	<div class="pannel">
+    		<span id="delall">清空</span>
+    		<span id="selectDone">完成选号</span>
+    	</div>
+    </div>
+</section>
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000029']
+        ]
+    });
+	function onDeviceReady(){
+		seajs.use('../../js/syy/rx8',function(ball){
+			ball.initialize(true);
+		});
+	}
+</script>
+</body>
+</html>

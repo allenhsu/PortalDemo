@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+<!--
+    @author: 栋寒(zhenn) 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<meta name="right-bar-item" content="title=手选,onclick=rightbar()" />
+<title>福彩3D</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/bet.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone-localstorage.js"></script>
+<script charset="utf-8" src="../../js/config.js"></script>
+</head>
+
+<body>
+<section id="betScroll">
+    <section id="pullSelect">
+        <div class="pbox">
+            <div class="tip"><span>下拉可以机选...</span><s></s></div>
+            <ul id="selectList">
+				  <li class="except"></li>             	
+            </ul>
+    
+            <div id="guide" class="hidden">
+                <s></s>
+            </div>
+        </div>
+    </section>
+
+	<div id="bottom">
+		<div class="relinfo">
+			<ul>
+				<li><span class="l">投</span><input type="tel" id="bt" value="1" /><span class="r">倍</span></li>
+				<li><span class="l">买</span><input type="tel" id="zh" value="1" /><span class="r">期</span></li>
+			</ul>
+		</div>
+		
+		<div class="extraInfo">
+			<ul class="pannel">
+				<li><em id="agree" class="siuCheck checked"></em><span>同意<b>《网上购彩协议》</b></span></li>
+			</ul>
+		</div>
+		
+		<div class="actarea">
+			<div class="pannel">
+				<span id="delall">清空</span>
+				<a href="#" id="submit" class="submit disabled">
+					<span class="l">共<em id="fee">0</em>元</span>
+					<span class="r">立即投注</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	
+    <a id="paybtn" class="hidden" href="#" target="_blank"></a>
+</section>
+
+<script type="javascript/template" id="fc3dBetViewTemp">
+    <%
+        var key = key, des = '';
+        switch(key){
+            case 'fc3d_zhx':
+                des = '[直选]';
+                break;
+            case 'fc3d_z3':
+                des = '[组三]';
+                break;
+            case 'fc3d_z6':
+                des = '[组六]';
+                break;
+            default:
+                break;
+        }
+        if(value.l3){
+            print('<em>' + value.l1.toString() + '</em><em>' + value.l2.toString() + '</em><em>' + value.l3.toString() + '</em><s>' + des + '<s>');
+        }else{
+            _.each(value.l1,function(b){
+                print('<em>' + b + '</em>');
+            });
+            print('<s>' + des + '</s>');
+        }
+    %>
+    <a href="#" class="del">删除</a>
+</script>
+
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000027']
+        ]
+    });
+	function onDeviceReady(){
+		seajs.use('../../js/fc3d/bet',function(bet){
+			bet.initialize();
+		});
+	}
+</script>
+</body>
+</html>

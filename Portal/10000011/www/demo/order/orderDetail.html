@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no;address=no;email=no">
+<meta charset="utf-8">
+<meta name="right-bar-item" id="alipayRightBar" content="title=继续购买,onclick=rightBar()" />
+<title>订单详情</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/order.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="../../js/lib/sea.js"></script>
+<script type="text/javascript" src="../../js/lib/zepto.js"></script>
+<script type="text/javascript" src="../../js/lib/underscore.js"></script>
+<script type="text/javascript" src="../../js/lib/backbone.js"></script>
+<script type="text/javascript" src="../../js/config.js"></script>
+</head>
+<body>
+
+<section id="page" class="page">
+	<section id="order-detail" class="order-detail"> 
+		<div class="loading"><img src="../../images/loading.gif" />加载中</div>
+		<div class="detail-content" id="order-detail-con"></div>
+	</section>
+</section>
+
+<!-- This template HTML will be used to render each order item. -->
+<script type="text/x-template" id="order-detail-template-n-dg">
+	<header class="hd">
+		<h2>
+			<%= C.Config.lotteryTypeMap[lotteryType].name %>
+			<%
+			if (typeof orderNumber !== 'undefined') {
+				print('第' + orderNumber[0].issue + '期');	
+			}
+			%>
+		</h2>
+	</header>
+	<div class="bd">
+		<div>
+			<dl>
+				<dt>订单详情</dt>
+				<% if (typeof donorNick !== 'undefined') { %>
+				<dd>
+					<span class="sl ls1">赠送人</span>
+					<span class="sr"><%= donorNick %></span>
+				</dd>
+				<% } %>
+				<% if (typeof sweetyWords !== 'undefined') { %>
+				<dd>
+					<span class="sl ls2">赠言</span>
+					<span class="sr"><%= sweetyWords %></span>
+				</dd>
+				<% } %>
+				<dd>
+					<span class="sl ls1">订单号</span>
+					<span class="sr"><%= outerId %></span>
+				</dd>
+				<% if (typeof freezeTime !== 'undefined') { %>
+				<dd>
+					<span class="sl">支付时间</span>
+					<span class="sr">
+						<% 
+							print(C.Template.formatDate(freezeTime));
+						%>
+					</span>
+				</dd>
+				<% } %>
+				<dd>
+					<span class="sl">投注金额</span>
+					<span class="sr"><%= Number(feeMoney.amount).toFixed(2) %>元</span>
+				</dd>
+				<dd>
+					<span class="sl">中奖金额</span>
+					<% 
+					if (typeof winFeeMoney !== 'undefined' && winFeeMoney.amount > 0) 
+						print('<span class="sr lucky">' + Number(winFeeMoney.amount).toFixed(2) + '元</span>');
+					else 
+						print('<span class="sr">--</span>');
+					%>
+				</dd>
+				<dd>
+					<span class="sl">温馨提示</span>
+					<span class="sr">
+						如中奖，万元以上奖金专人通知，万元以下奖金打入支付宝								
+					</span>
+				</dd>
+				<dd>
+					<span class="sl">订单状态</span>
+					<span class="sr"><%= orderStatus %></span>
+				</dd>
+				<% if (typeof presentId !== 'undefined') { %>
+				<dd class="ex">
+					<a href="javascript:void(0);" class="zs">立即回赠</a>
+				</dd>
+				<% } %>				
+			</dl>
+			<dl>
+				<dt>投注内容</dt>
+				<%
+				if (typeof orderNumber !== 'undefined') {
+					_.each(orderNumber, function(order) {
+						if (order.saleCode != null) {
+				%>
+				<dd>
+					<span class="sl ls1">标识码</span>
+					<span class="sr"><%= order.saleCode %></span>
+				</dd>
+				<%
+						}
+				%>	
+				<dd>
+					<span class="sl">投注内容</span>
+					<span class="sr effect">
+						<%	
+							_.each(order.formatedLotteryNumbers, function(number){
+								print(number + '<br/>');
+							});
+						%>
+					</span>
+				</dd>
+				<dd>
+					<span class="sl ls2">倍数</span>
+					<span class="sr"><%= order.multi %>倍</span>
+				</dd>
+				<dd>
+					<span class="sl ls2">注数</span>
+					<span class="sr"><%= order.totalStake %>注</span>
+				</dd>
+				<%
+					});
+				}
+				%>			
+			</dl>
+			<dl>
+				<dt>开奖号码</dt>
+				<% if (typeof orderNumber !== 'undefined') { %>
+				<dd class="ball">
+					<%
+						print(C.Template.formatLuckNumber(orderNumber[0].luckyNumber));
+					%>
+				</dd>
+				<% } %>
+			</dl>
+		</div>
+	</div>
+</script>
+
+<script type="text/x-template" id="order-detail-template-s-dg">
+	<header class="hd">
+		<h2><%= C.Config.lotteryTypeMap[lotteryType].name %></h2>
+	</header>
+	<div class="bd">
+		<div>
+			<dl>
+				<dt>订单详情</dt>
+				<dd>
+					<span class="sl ls1">订单号</span>
+					<span class="sr"><%= outerId %></span>
+				</dd>
+				<% if (typeof freezeTime !== 'undefined') { %>
+				<dd>
+					<span class="sl">支付时间</span>
+					<span class="sr">
+						<% 
+							print(C.Template.formatDate(freezeTime));
+						%>
+					</span>
+				</dd>
+				<% } %>
+				<dd>
+					<span class="sl ls2">玩法</span>
+					<span class="sr"><%= formatedGameType %></span>
+				</dd>
+				<dd>
+					<span class="sl">投注金额</span>
+					<span class="sr"><%= Number(feeMoney.amount).toFixed(2) %>元</span>
+				</dd>
+				<dd>
+					<span class="sl">中奖金额</span>
+					<% 
+					if (typeof winFeeMoney !== 'undefined' && winFeeMoney.amount > 0) 
+						print('<span class="sr lucky">' + Number(winFeeMoney.amount).toFixed(2) + '元</span>');
+					else 
+						print('<span class="sr">--</span>');
+					%>
+				</dd>
+				<dd>
+					<span class="sl">订单状态</span>
+					<span class="sr"><%= orderStatus %></span>
+				</dd>
+				<dd>
+					<span class="sl">温馨提示</span>
+					<span class="sr">
+						如中奖，万元以上奖金专人通知，万元以下奖金打入支付宝								
+					</span>
+				</dd>
+			</dl>
+			<%
+			if (typeof orderMatch !== 'undefined') {
+			%>
+			<dl>
+				<dt>选号方案</dt>
+				<dd>
+					<table class="table">
+						<tr>
+							<th class="w3">场次</th>
+							<%
+							if (lotteryType == '20') {
+								print('<th colspan="2">客队 对阵 主队</th>');
+							} else {
+								print('<th colspan="2">主队 对阵 客队</th>');
+							}
+							%>
+							<th>投注</th>						
+							<th class="w6">彩果</th>
+							<%
+							if (lotteryType == '20') {
+								print('<th class="w1">让分</th>');
+							} else {
+								print('<th class="w1">让球</th>');
+							}
+							%>
+							<th class="w1">胆</th>
+						</tr>
+						<%
+						_.each(orderMatch, function(match, index) {
+						%>
+						<tr>
+							<td><%= match.fmOrder %></td>
+							<td class="tr vs">VS</td>
+							<%
+							if (lotteryType == '20') {
+							%>
+							<td class="tl match"><%= match.visitTeam.replace(/\s/g,'').substring(0,4) %><br/><%= match.hostTeam.replace(/\s/g,'').substring(0,4) %></td>
+							<%
+							} else {
+							%>
+							<td class="tl match"><%= match.hostTeam.replace(/\s/g,'').substring(0,4) %><br/><%= match.visitTeam.replace(/\s/g,'').substring(0,4) %></td>
+							<%
+							}
+							%>
+							<td class="effect"><%= (match.flnb == null) ? '' : match.flnb.join(',') %></td>
+							<td><%= (match.forResult == null) ? '--' : match.forResult %><br><%= ((lotteryType == '16') && (match.resultSp != null)) ? '(' + C.Template.numberFormat(match.resultSp) + ')' : '' %></td>
+							<td><%= (match.adjust == null) ? '--' : match.adjust %></td>
+							<td><%= match.dt ? '√' : '×' %></td>
+						</tr>
+						<%
+						});
+						%>
+					</table>
+				</dd>
+			</dl>
+			<%
+			}
+			%>
+			<dl>
+				<dt>选号详情</dt>
+				<dd>
+					<table class="table">
+						<tr>
+							<th class="w1">序号</th>
+							<th>场次</th>
+							<th class="w7">过关方式</th>
+							<th class="w1">倍投</th>
+							<th class="w4">中奖金额</th>
+						</tr>
+						<%
+						_.each(orderNumber, function(order, index) {
+						%>
+						<tr>
+							<td><%= index %></td>
+							<td><%= order.formatedLotteryNumbers.join('</br>') %></td>
+							<td><%= order.formatedPassType %></td>
+							<td><%= order.multi %></td>
+							<% 
+							if (order.winFeeMoney && order.winFeeMoney.amount > 0) 
+								print('<td class="lucky">' + Number(order.winFeeMoney.amount).toFixed(2) + '元</td>');
+							else 
+								print('<td>' + order.status + '</td>');
+							%>					
+						</tr>
+						<%
+						});
+						%>
+					</table>
+				</dd>
+			</dl>
+		</div>
+	</div>
+</script>
+
+<script type="text/x-template" id="order-detail-template-n-hm">
+	<header class="hd">
+		<h2>
+			<%= C.Config.lotteryTypeMap[lotteryType].name %>
+			<%
+			if (typeof orderNumber !== 'undefined') {
+				print('第' + orderNumber[0].issue + '期');	
+			}
+			%>
+		</h2>	
+	</header>
+	<div class="bd">
+		<div>
+			<dl>
+				<dt>订单详情</dt>
+				<dd>
+					<span class="sl">合买宣言</span>
+					<span class="sr"><%= description %></span>
+				</dd>
+				<dd>
+					<span class="sl">方案进度</span>
+					<span class="sr"><%= process %>%</span>
+				</dd>
+				<dd>
+					<span class="sl">方案状态</span>
+					<span class="sr">
+						<%= unitedStatus %>				
+					</span>
+				</dd>
+				<dd>
+				<span class="sl">中奖总额</span>
+				<span class="sr">
+					<%
+						if (winMoney.amount > 0) {
+							print('<span class="lucky">' + Number(winMoney.amount).toFixed(2) + '元</span>');
+						} else {
+							print(winStatus);
+						}
+					%>
+				</span>
+			</dd>
+			<dd class="ball">
+				<span class="sl">开奖号码</span>
+				<span class="sr">
+					<% 
+						print(C.Template.formatLuckNumber(luckNum));
+					%>
+				</span>
+			</dd>
+			<dd>
+				<span class="sl">温馨提示</span>
+				<span class="sr">
+					如中奖，万元以上奖金专人通知，万元以下奖金打入支付宝								
+				</span>
+			</dd>
+		</dl>
+		<dl>
+			<dt>方案详情</dt>
+			<dd>
+				<span class="sl ls1">发起人</span>
+				<span class="sr"><%= creatorNick %></span>
+			</dd>
+			<dd>
+				<span class="sl">方案编号</span>
+				<span class="sr"><%= outerId %></span>
+			</dd>
+			<dd>
+				<span class="sl">发布时间</span>
+				<span class="sr">
+					<% 
+						print(C.Template.formatDate(createTime));
+					%>
+				</span>
+			</dd>
+			<dd>
+				<span class="sl">方案金额</span>
+				<span class="sr"><%= Number(totalFee.amount).toFixed(2) %>元</span>
+			</dd>
+			<dd style="overflow:visible;">
+				<span class="sl">选号详情</span>
+				<span class="sr pa">
+				<% 
+					if(isShowLotteryNumber || isRelOpen){
+						if ((typeof orderNumber == 'undefined') || (orderNumber == '')) {
+							print('该方案相对保密');
+						} else {
+							print('<button class="fold">查看选号方案</button>');
+						}
+					}else{
+						if (isOwner) {
+							print('<button class="fold">查看选号方案</button>');
+						} else {
+							print('该方案完全保密');
+						}
+					}
+				%>
+				</span>
+			</dd>
+			<% if ((typeof orderNumber !== 'undefined') && (orderNumber !== '')) { %>
+			<dd class="detail no-visible">
+				<table class="table">
+					<tr>
+						<th>投注号码</th>
+						<th class="w2">倍投</th>
+					</tr>
+					<%
+					_.each(orderNumber, function(order) {
+						_.each(order.formatedLotteryNumbers, function(number) {
+					%>
+					<tr>
+						<td class="tl effect"><%= number %></td>
+						<td><%= order.multi %>倍</td>
+					</tr>
+					<%
+						});
+					});
+					%>	
+				</table>
+			</dd>
+			<% } %>
+		</dl>
+		<dl>
+			<dt>合买详情</dt>
+			<dd>
+				<span class="sl">方案分割</span>
+				<span class="sr">此方案共<%= totalShare %>份，每份 <em><%= Number(perFee / 100).toFixed(2) %></em> 元</span>
+			</dd>
+			<dd>
+				<span class="sl">中奖佣金</span>
+				<span class="sr"><%= profitPct %>%</span>
+			</dd>
+			<% 
+			var per = perFee / 100,
+				createMoney = Number(shareCnts * per).toFixed(2),
+				followMoney = Number(totalSubCnt * per).toFixed(2),
+				remainMoney = Number(leaveCount * per).toFixed(2);
+			%>
+			<dd>
+				<span class="sl">方案保底</span>
+				<span class="sr">发起人共购买<%= shareCnts %>份（金额<em><%= createMoney %></em>元），承诺保底<%= reserveShare %>份（金额<em><%= Number(reserveMoney.amount).toFixed(2) %></em>元），实际保底<%= lastReserveShare %>份（金额<em><%= Number(lastReserveMoney.amount).toFixed(2) %></em>元）</span>
+			</dd>
+			<dd>
+				<span class="sl">合买用户</span>
+				<span class="sr">总参与人数: <%= totalPeopleCount %>人次，已认购<%= totalSubCnt %>份（<em><%= followMoney %></em>元），剩余<%= leaveCount %>份（<em><%= remainMoney %></em>元）</span>
+			</dd>
+		</dl>
+	</div>
+</script>
+
+<script type="text/x-template" id="order-detail-template-s-hm">
+	<header class="hd">
+		<h2><%= C.Config.lotteryTypeMap[lotteryType].name %></h2>
+	</header>
+	<div class="bd">
+		<div>
+			<dl>
+				<dt>订单详情</dt>
+				<dd>
+					<span class="sl">合买宣言</span>
+					<span class="sr"><%= description %></span>
+				</dd>
+				<dd>
+					<span class="sl">方案进度</span>
+					<span class="sr"><%= process %>%</span>
+				</dd>
+				<dd>
+					<span class="sl">方案状态</span>
+					<span class="sr">
+						<%= unitedStatus %>					
+					</span>
+				</dd>
+				<dd>
+					<span class="sl">中奖总额</span>
+					<span class="sr">
+						<%
+							if (winMoney.amount > 0) {
+								print('<span class="lucky">' + Number(winMoney.amount).toFixed(2) + '元</span>');
+							} else {
+								print(winStatus);
+							}
+						%>
+					</span>
+				</dd>
+				<dd>
+					<span class="sl">温馨提示</span>
+					<span class="sr">
+						如中奖，万元以上奖金专人通知，万元以下奖金打入支付宝								
+					</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>方案详情</dt>
+				<dd>
+					<span class="sl ls1">发起人</span>
+					<span class="sr"><%= creatorNick %></span>
+				</dd>
+				<dd>
+					<span class="sl">方案编号</span>
+					<span class="sr"><%= outerId %></span>
+				</dd>
+				<dd>
+					<span class="sl">发布时间</span>
+					<span class="sr">
+						<% 
+							print(C.Template.formatDate(createTime));
+						%>
+					</span>
+				</dd>
+				<dd>
+					<span class="sl">方案金额</span>
+					<span class="sr"><%= Number(totalFee.amount).toFixed(2) %>元</span>
+				</dd>
+				<% if (typeof orderMatch !== 'undefined') { %>
+				<dd style="overflow:visible;">
+					<span class="sl">选择场次</span>
+					<span class="sr pa"><button class="fold">共 <%= orderMatch.length %> 场</button></span>
+				</dd>
+				<dd class="detail no-visible">
+					<table class="table">
+						<tr>
+							<th class="w3">场次</th>
+							<%
+							if (lotteryType == '20') {
+								print('<th colspan="2">客队 对阵 主队</th>');
+							} else {
+								print('<th colspan="2">主队 对阵 客队</th>');
+							}
+							%>
+							<th>投注</th>						
+							<th class="w6">彩果</th>											
+							<%
+							if (lotteryType == '20') {
+								print('<th class="w1">让分</th>');
+							} else {
+								print('<th class="w1">让球</th>');
+							}
+							%>
+							<th class="w1">胆</th>
+						</tr>
+						<%
+						_.each(orderMatch, function(match, index) {
+						%>
+						<tr>
+							<td><%= match.fmOrder %></td>
+							<td class="tr vs">VS</td>
+							<%
+							if (lotteryType == '20') {
+							%>
+							<td class="tl match"><%= match.visitTeam.replace(/\s/g,'').substring(0,4) %><br/><%= match.hostTeam.replace(/\s/g,'').substring(0,4) %></td>
+							<%
+							} else {
+							%>
+							<td class="tl match"><%= match.hostTeam.replace(/\s/g,'').substring(0,4) %><br/><%= match.visitTeam.replace(/\s/g,'').substring(0,4) %></td>
+							<%
+							}
+							%>
+							<td class="effect"><%= match.flnb.join(',') %></td>
+							<td><%= (match.forResult == null) ? '--' : match.forResult %><br><%= ((lotteryType == '16') && (match.resultSp != null)) ? '(' + C.Template.numberFormat(match.resultSp) + ')' : '' %></td>
+							<td><%= (match.adjust == null) ? '--' : match.adjust %></td>
+							<td><%= match.dt ? '√' : '×' %></td>
+						</tr>
+						<%
+						});
+						%>
+					</table>
+				</dd>
+				<% } %>
+				<dd style="overflow:visible;">
+					<span class="sl">选号详情</span>
+					<span class="sr pa">
+					<% 
+						if(isShowLotteryNumber || isRelOpen){
+							if ((typeof orderNumber == 'undefined') || (orderNumber == '')) {
+								print('该方案相对保密');
+							} else {
+								print('<button class="fold">查看选号方案</button>');
+							}
+						}else{
+							if (isOwner) {
+								print('<button class="fold">查看选号方案</button>');
+							} else {
+								print('该方案完全保密');
+							}
+						}
+					%>
+					</span>
+				</dd>
+				<% if ((typeof orderNumber !== 'undefined') && (orderNumber !== '')) { %>
+				<dd class="detail no-visible">
+					<table class="table">
+						<tr>
+							<th class="w1">序号</th>
+							<th>场次</th>
+							<th class="w7">过关方式</th>
+							<th class="w1">倍投</th>
+							<th class="w4">中奖金额</th>
+						</tr>
+						<%
+						_.each(orderNumber, function(order, index) {
+						%>
+						<tr>
+							<td><%= index %></td>
+							<td><%= order.formatedLotteryNumbers.join('</br>') %></td>
+							<td><%= order.formatedPassType %></td>
+							<td><%= order.multi %></td>
+							<% 
+							if (order.winFeeMoney && order.winFeeMoney.amount > 0) 
+								print('<td class="lucky">' + Number(order.winFeeMoney.amount).toFixed(2) + '元</td>');
+							else 
+								print('<td>' + order.status + '</td>');
+							%>					
+						</tr>
+						<%
+						});
+						%>
+					</table>
+				</dd>
+				<% } %>
+			</dl>
+			<dl>
+				<dt>合买详情</dt>
+				<dd>
+					<span class="sl">方案分割</span>
+					<span class="sr">此方案共<%= totalShare %>份，每份 <em><%= Number(perFee / 100).toFixed(2) %></em> 元</span>
+				</dd>
+				<dd>
+					<span class="sl">中奖佣金</span>
+					<span class="sr"><%= profitPct %>%</span>
+				</dd>
+				<% 
+				var per = perFee / 100,
+					createMoney = Number(shareCnts * per).toFixed(2),
+					followMoney = Number(totalSubCnt * per).toFixed(2),
+					remainMoney = Number(leaveCount * per).toFixed(2);
+				%>
+				<dd>
+					<span class="sl">方案保底</span>
+					<span class="sr">发起人共购买<%= shareCnts %>份（金额<em><%= createMoney %></em>元），承诺保底<%= reserveShare %>份（金额<em><%= Number(reserveMoney.amount).toFixed(2) %></em>元），实际保底<%= lastReserveShare %>份（金额<em><%= Number(lastReserveMoney.amount).toFixed(2) %></em>元）</span>
+				</dd>
+				<dd>
+					<span class="sl">合买用户</span>
+					<span class="sr">总参与人数: <%= totalPeopleCount %>人次，已认购<%= totalSubCnt %>份（<em><%= followMoney %></em>元），剩余<%= leaveCount %>份（<em><%= remainMoney %></em>元）</span>
+				</dd>
+			</dl>
+		</div>
+	</div>
+</script>
+
+<script type="text/x-template" id="order-detail-template-n-zh">
+	<header class="hd">
+		<h2><%= C.Config.lotteryTypeMap[lotteryType].name %></h2>
+	</header>
+	<div class="bd">
+		<div>
+			<dl>
+				<dt>追号详情</dt>
+				<dd>
+					<span class="sl ls1">订单号</span>
+					<span class="sr"><%= outerId %></span>
+				</dd>
+				<dd>
+					<span class="sl">创建时间</span>
+					<span class="sr">
+						<% 
+							print(C.Template.formatDate(createTime));
+						%>
+					</span>
+				</dd>
+				<dd>
+					<span class="sl ls1">总金额</span>
+					<span class="sr"><%= Number(feeMoney.amount).toFixed(2) %>元</span>
+				</dd>
+				<dd>
+					<span class="sl">订单状态</span>
+					<span class="sr"><%= pursueStatus %></span>
+				</dd>
+				<dd>
+					<span class="sl ls2">进度</span>
+					<span class="sr">已追<em> <%= finishCount %> </em>期/共<em> <%= issueCount %> </em>期</span>
+				</dd>
+				<dd>
+					<span class="sl">追号名称</span>
+					<span class="sr"><%= title %></span>
+				</dd>
+				<dd>
+					<table class="table">
+						<tr>
+							<th class="w1">序号</th>
+							<th class="w5">期次</th>
+							<th>状态</th>
+							<th class="w4">中奖信息</th>
+						</tr>
+						<%
+						_.each(pursueDetail, function(order, index) {
+							if (order.issue === orderNumber[0].issue) {
+						%>
+							<tr class="pursue-item" data-item="true" data-issue="<%= order.issueIdHelper %>">
+								<td><%= index %></td>
+								<td class="issue unfold"><%= order.issue %></td>
+								<td class="tl"><%= order.orderStatus %></td>
+								<%
+								if(order.winFee && order.winFee.amount > 0) 
+									print('<td class="lucky">' + Number(order.winFee.amount).toFixed(2) + '元</td>'); 
+								else 
+									print('<td>' + order.winStatus + '</td>'); 
+								%>
+							</tr>
+							<tr>
+								<td colspan="4" class="info">
+									投注号码:
+									<%
+										var arr = [];
+										_.each(orderNumber, function(order) {
+											_.each(order.formatedLotteryNumbers, function(num) {
+												arr.push(num + ' ' + order.multi + '倍');
+											});								
+										});
+										print('<div class="effect">' + arr.join('</br>') + '</div>'); 
+										if (order.luckyNumber) {
+											print('<br>开奖号码: <div class="luckNumber">' + order.luckyNumber + '</div>'); 
+										}
+									%>
+								</td>
+							</tr>
+							<%
+							} else {
+							%>
+							<tr class="pursue-item" data-item="false" data-issue="<%= order.issueIdHelper %>">
+								<td><%= index %></td>
+								<td class="issue fold"><%= order.issue %></td>
+								<td class="tl"><%= order.orderStatus %></td>
+								<%
+								if(order.winFee && order.winFee.amount > 0) 
+									print('<td class="lucky">' + Number(order.winFee.amount).toFixed(2) + '元</td>'); 
+								else 
+									print('<td>' + order.winStatus + '</td>'); 
+								%>
+							</tr>
+							<tr class="no-visible">
+								<td colspan="4" class="loading">
+									<img src="../img/loading.gif" width="16" height="16" />加载中
+								</td>
+								<td colspan="4" class="info hidden">
+									<%
+										if (order.luckyNumber) {
+											print('<br>开奖号码: <div class="luckNumber">' + order.luckyNumber + '</div>'); 
+										}
+									%>
+								</td>
+							</tr>
+						<%
+							}
+						});
+						%>
+					</table>
+				</dd>
+			</dl>
+		</div>
+	</div>
+</script>
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000014']
+        ]
+    });
+	function onDeviceReady(){
+		seajs.use('../../js/order/orderDetail', function(orderDetail){
+			orderDetail.initialize();
+		});
+	}
+</script>
+</body>
+</html>

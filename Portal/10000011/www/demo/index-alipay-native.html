@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+<!--
+    @author: 栋寒(zhenn) 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<title>淘宝彩票</title>
+<link href="../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../css/bet.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../js/lib/sea.js"></script>
+<script charset="utf-8" src="../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../js/lib/backbone-localstorage.js"></script>
+<script charset="utf-8" src="../js/config.js?xx=1"></script>
+</head>
+
+<body>
+<!--菜单{{-->
+<menu class="appMenu" id="appMenu">
+	<ul>
+		<li class="lottype ssq" rel="ssq" typeid="1">
+			<a rel="ssq/ssqbet.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">双色球</em></p>
+					<p>每注2元，最高奖1000万</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype dlt" rel="dlt" typeid="8">
+			<a rel="dlt/dltbet.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">大乐透</em></p>
+					<p>3元赢取最高奖1500万</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype jclq" rel="jclq" typeid="20">
+			<a rel="jclq/jclqmatch.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">竞彩篮球</em></p>
+					<p>返奖率最高69%</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype zqdc" rel="zqdc" typeid="16">
+			<a rel="zqdc/zqdcmatch.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">足球单场</em></p>
+					<p>猜中一场有奖</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype jczq" rel="jczq" typeid="21">
+			<a rel="jczq/jczqmatch.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">竞彩足球</em></p>
+					<p>返奖率最高69%</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype syy" rel="syy" typeid="15">
+			<a rel="syy/rx5.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">十一运夺金</em></p>
+					<p>返奖率59%，最高奖金1170元</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype xssc" rel="xssc" typeid="14">
+			<a rel="xssc/x3zhx.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">时时彩</em></p>
+					<p>10分钟一期，最高奖金11万</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype qlc" rel="qlc" typeid="7">
+			<a rel="qlc/bet.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">七乐彩</em></p>
+					<p>每注2元，最高奖1000万</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		
+		<li class="lottype fc3d" rel="fc3d" typeid="2">
+			<a rel="fc3d/bet.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">福彩3D</em></p>
+					<p>2元赢取1000元，中奖率高</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="lottype swxw" rel="swxw" typeid="22">
+			<a rel="swxw/bet.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p><em class="lotname">15选5</em></p>
+					<p>每天1期，最高奖500万</p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="rewardNotice">
+			<a rel="reward/list.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p class="onlyone"><em class="lotname">开奖公告</em></p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		<li class="myLottery">
+			<a rel="order/orderList.html">
+				<span class="icon"></span>
+				<div class="txt">
+					<p class="onlyone"><em class="lotname">我的订单</em></p>
+				</div>
+				<s></s>
+			</a>
+		</li>
+		
+	</ul>
+</menu>
+<!--菜单}}-->
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000021']
+        ]
+    });
+	function onDeviceReady(){
+		seajs.use('../js/appnav/nav',function(Nav){
+			Nav.initialize();
+		});
+	}
+</script>
+</body>
+</html>

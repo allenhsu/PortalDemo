@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+<!--
+    @author: 栋寒(zhenn) 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<title>开奖公告</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/bet.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone-localstorage.js"></script>
+<script charset="utf-8" src="../../js/config.js"></script>
+</head>
+
+<body>
+<section id="reward" class="temp">
+	<div class="loading"><img src="../../images/loading.gif" /> 正在努力请求数据...</div>
+	<div id="rewardMain" class="appMenu hidden">
+		<ul></ul>
+	</div>
+</section>
+
+<script type="javascript/template" id="rewardDataTemp">
+	<% 
+		var lotname = '' , lot = '';
+		for(var i in C.Config.lotTypeNumberId){
+			if(lotteryType == C.Config.lotTypeNumberId[i]){
+				//如“双色球”
+				lot = i;
+				lotname = C.Config.lotteryTypeHash[i];
+			}
+		}
+	%>
+	<% if(lotteryType == 20 || lotteryType == 21 || lotteryType == 16) { %>
+		<a href="#" rel="<%= lot %>" rev="true"> 
+			<span class="icon"></span>
+			<div class="txt">
+				<p class="onlyone">
+					<em class="lotname"><%= lotname %></em>
+				 	<% if (typeof issue !== 'undefined') { %>第<em class="issueCount"><%= issue %></em>期<% } %>
+				</p>
+			</div>
+			<s></s>
+		</a>
+	<% }else { %>
+
+    <a href="#" rel="<%= lot %>">
+        <span class="icon"></span>
+        <div class="txt">
+            <p><em class="lotname"><%= lotname %></em> 第<em class="issueCount"><%= issue %></em>期</p>
+            <p class="ball">
+            	<%
+            		//双色球、七乐彩
+            		if(lotteryType == 1 || lotteryType == 7){
+            			var lucky = luckyNum.split(':');
+            			print(lucky[0].replace(/(\d{2})/gi,'<em>$1</em>') + lucky[1].replace(/(\d{2})/gi,'<span>$1</span>'));
+            		}else if(lotteryType == 8){   
+            			//大乐透
+            			var lucky = luckyNum.split('-');
+            			print(lucky[0].replace(/(\d{2})/gi,'<em>$1</em>') + lucky[1].replace(/(\d{2})/gi,'<span>$1</span>'));
+            		}else if(lotteryType == 22){   
+            			//十五选五
+            			print(luckyNum.replace(/(\d{2})/gi,'<em>$1</em>'));
+            		}else if(lotteryType == 15){
+            			
+            			print(luckyNum.replace(/,/gi,'').replace(/(\d{2})/gi,'<em>$1</em>'));
+            		}else{
+            			//福彩3d、排列三、排列五、七星彩、新时时彩
+            			print(luckyNum.replace(/,/gi,'').replace(/(\d{1})/gi,'<em>$1</em>'));
+            		}
+            	%>
+            </p>
+        </div>
+        <s></s>
+    </a>
+	<% } %>
+</script>
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?0000011']
+        ]
+    });
+
+	function onDeviceReady(){
+		seajs.use('../../js/reward/list',function(list){
+			list.initialize();
+		});
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<!--
+    @author: 栋寒(zhenn) 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<title></title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/bet.css" type="text/css" rel="stylesheet" />
+<link href="../../js/widget/pull-to-act/css/pull.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone-localstorage.js"></script>
+<script charset="utf-8" src="../../js/config.js"></script>
+</head>
+
+<body>
+<section id="rewardList" class="temp">
+	<div class="loading"><img src="../../images/loading.gif" /> 正在努力请求数据...</div>
+	<div id="rewardListMain" class="appMenu hidden">
+		<div class="box p-pannel">
+			<ul class="p-list"></ul>
+		</div>
+	</div>
+</section>
+
+<script type="javascript/template" id="rewardDataListTemp">
+    <p class="other"><em>第<%= issue %>期</em><span><%= C.Template.getCommonTime(award_time.time) %></span></p>  
+    <p class="lucky">
+        <%
+            //双色球、七乐彩
+            if(lotteryType == 1 || lotteryType == 7){
+                var lucky = lucky_number.split(':');
+                print(lucky[0].replace(/(\d{2})/gi,'<em>$1</em>') + lucky[1].replace(/(\d{2})/gi,'<span>$1</span>'));
+            }else if(lotteryType == 8){   
+                //大乐透
+                var lucky = lucky_number.split('-');
+                print(lucky[0].replace(/(\d{2})/gi,'<em>$1</em>') + lucky[1].replace(/(\d{2})/gi,'<span>$1</span>'));
+            }else if(lotteryType == 22){   
+                //十五选五
+                print(lucky_number.replace(/(\d{2})/gi,'<em>$1</em>'));
+            }else if(lotteryType == 15){
+            	print(lucky_number.replace(/(\d{2}),/gi,'<em>$1</em>'));
+            }else{
+                //福彩3d、排列三、排列五、七星彩、新时时彩
+                print(lucky_number.replace(/,/gi,'').replace(/(\d{1})/gi,'<em>$1</em>'));
+            }
+        %>
+    </p>
+</script>
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000011']
+        ]
+    });
+	function onDeviceReady(){
+		seajs.use('../../js/reward/detail',function(detail){
+			detail.initialize();
+		});
+	}
+</script>
+</body>
+</html>

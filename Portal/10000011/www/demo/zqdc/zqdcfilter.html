@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+    @author: 函谷 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<meta name="center-bar-item" id="alipayCenterBar" content="title=赛事筛选" />
+<meta name="right-bar-item" id="alipayRightBar" content="title=确定,onclick=rightBar()" />
+<title>赛事筛选</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/sport.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/juicer.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/config.js"></script>
+</head>
+
+<body>
+
+<section id="filter-content"> </section>
+
+<!-- 比赛单元 -->
+<script type="text/template" id="FilterTemp">
+	<div class="hd">共有<span id="num">${length}</span>场比赛</div>
+	<div class="bd">
+		<ul>
+			{@each data as game, key}
+				<li {@if game.select}class="on"{@/if}>${key}</li>
+			{@/each}
+		</ul>
+	</div>
+</script>
+	
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+	seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000018']
+        ]
+    });
+	function onDeviceReady(){
+		seajs.use('../../js/zqdc/zqdcfilter', function(filter) {
+			filter.initialize();
+		});
+	}
+</script>
+</body>
+</html>

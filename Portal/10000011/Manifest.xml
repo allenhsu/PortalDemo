@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package version="1.0">
+	<!--业务包UID -->
+	<uid>10000011</uid>
+	
+	<!--业务包名称 -->
+	<name>彩票</name>
+	
+	<!--业务包介绍 -->
+	<descriptor>彩票</descriptor>
+	
+	<!--业务包版本 -->
+	<version>3.0.0.0</version>
+    
+	<!--业务包运行要求的最低容器版本 -->
+    <uses-sdk minSdkVersion="7.0.0.0528"/> 
+	
+	<!--业务包使用的能力集 -->
+	<uses-feature></uses-feature>
+    
+    <!--解释器版本-->
+	<app-type>web</app-type>
+    
+	<!--业务包运行前提要求 -->
+	<requisite>login</requisite>
+	
+	<!--业务包适配描述 -->
+	<supports-screens>480*800\320*480</supports-screens> 
+	
+	<!--业务包入口图标 -->
+	<icon>icon.png</icon>
+	
+	<!--业务包入口描述文件：http://b.ued.taobao.net/a.tbcdn.cn/apps/lottery/webapp-alipay/demo/index-alipay-native.html -->
+	<entry>demo/index-alipay-native.html</entry>
+</package>

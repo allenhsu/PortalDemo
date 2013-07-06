@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+    @author: 函谷  
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<!--<meta name="left-bar-item" id="alipayLeftBar" content="title=返回,onclick=leftBar()" />-->
+<meta name="center-bar-item" id="alipayCenterBar" content="title=开奖公告" />
+<meta name="right-bar-item" id="alipayRightBar" content="title=往期赛果,onclick=rightBar()" />
+<title>开奖公告</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/sport.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/juicer.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/config.js?t=2"></script>
+</head>
+
+<body>
+<section id="reward" class="temp">
+	<div id="match-box"></div>
+	<div id="loading"><img src="../../images/loading.gif" /> 正在努力请求数据...</div>
+</section>
+
+<section>
+	<a href="#" id="simulateDom"> </a>
+	<div id="issueList"> </div>
+	<div id="myCalendar"> </div>
+	<button id="calendar" class="hidden" type="button"> </button>
+</section>
+
+<!-- 比赛单元 -->
+<script type="text/template" id="ZQItemTemp">
+	<div class="hd">
+		<h2><%= matchsTimes %> 共<%= matchList.length %>场比赛</h2>
+		<s></s>
+	</div>
+	<div class="bd">
+		<%
+			_.each(matchList, function(match) {
+		%>
+			<dl>
+				<dt class="w1">
+					<p><%= match.gameName %></p>
+					<p><%= match.matchWeek %> <%= match.matchOrder %></p>
+				</dt>
+				<dd class="w2">
+					<%= match.hostTeam %><% 
+						if (match.adjust < 0) {
+							print('<span class="neg">(' + match.adjust + ')</span>');
+						} else if (match.adjust > 0) {
+							print('<span class="pos">(' + match.adjust + ')</span>');
+						}
+					%>
+				</dd>
+				<dd class="w3 result">
+					<%
+					//如果已开奖
+					if (match.drawed) {
+						if ((match.hostTeamFscore == -1) && (match.visTeamFscore == -1)) {
+							print('<div class="reward-null">取消</div>');
+						} else if(match.hostTeamFscore + Number(match.adjust) > match.visTeamFscore){
+							print('<div class="reward-win">胜<em>(' + match.hostTeamFscore + ':' + match.visTeamFscore + ')</em></div>');
+						}else if(match.hostTeamFscore + Number(match.adjust) < match.visTeamFscore){
+							print('<div class="reward-negative">负<em>(' + match.hostTeamFscore + ':' + match.visTeamFscore + ')</em></div>');
+						}else{
+							print('<div class="reward-even">平<em>(' + match.hostTeamFscore + ':' + match.visTeamFscore + ')</em></div>');
+						}
+					}else{
+						print('<div class="reward-null">-:-</div>');
+					}
+					%>
+				</dd>
+				<dd class="w4">
+					<%= match.visTeam %>
+				</dd>
+			</dl>	
+		<% }); %>
+	</div>
+</script>
+
+<!-- 比赛单元 -->
+<script type="text/template" id="LQItemTemp">
+	<div class="hd">
+		<h2><%= matchsTimes %> 共<%= matchList.length %>场比赛</h2>
+		<s></s>
+	</div>
+	<div class="bd">
+		<%
+			_.each(matchList, function(match) {
+		%>
+			<dl>
+				<dt class="w7">
+					<p><%= match.gameName %></p>
+					<p><%= match.matchWeek %> <%= match.matchOrder %></p>
+				</dt>
+				<dd class="w8">
+					<%= match.visTeam %>
+				</dd>
+				<dd class="w9 result">
+					<%
+					//如果已开奖
+					if (match.drawed) {
+						if ((match.hostTeamFscore == -1) && (match.visTeamFscore == -1)) {
+							print('<div class="reward-null">取消</div>');
+						} else {
+							print('<div class="reward-null">' + match.visTeamFscore + ':' + match.hostTeamFscore + '</div>');
+						}
+					}else{
+						print('<div class="reward-null">-:-</div>');
+					}
+					%>
+				</dd>
+				<dd class="w8">
+					<%= match.hostTeam %>
+				</dd>
+			</dl>	
+		<% }); %>
+	</div>
+</script>
+
+<!-- 彩期列表 -->
+<script type="text/template" id="IssueTemp">
+	<dl>
+		<dt>最近10期赛果</dt>
+		<%
+			_.each(issueList, function(issue, index) {
+				if (index == 0) {
+					print('<dd class="cur" data-id="' + issue.issue_id + '" data-issue="' + issue.issue + '">第' + issue.issue + '期</dd>');
+				} else {
+					print('<dd data-id="' + issue.issue_id + '" data-issue="' + issue.issue + '">第' + issue.issue + '期</dd>');
+				}
+			});
+		%>
+	</dl>
+</script>
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000025']
+        ]
+    });
+	function onDeviceReady(){
+		var route = '../../js/reward/detail' + localStorage.getItem('rewardDetailType');
+		seajs.use(route, function(detail){
+			detail.initialize();
+		});
+	}
+</script>
+</body>
+</html>

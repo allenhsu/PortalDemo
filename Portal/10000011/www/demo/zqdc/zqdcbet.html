@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+    @author: 函谷 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<meta name="left-bar-item" id="alipayLeftBar" content="onclick=leftBar()" />
+<meta name="center-bar-item" id="alipayCenterBar" content="title=足球单场" />
+<title>足球单场</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/sport.css?t=5" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/juicer.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/config.js"></script>
+</head>
+<body>
+<section id="bet-content">
+    <div id="match-list">
+    	<div>
+            <!--选号列表{{-->
+            <ul> </ul>
+            <!--选号列表}}-->
+		</div>
+    </div>
+
+	<div id="actarea">
+		<!--<div id="scroll-trig">
+			<span> </span>
+		</div>-->
+		
+		<div id="pass-type">
+			<span class="require"> </span>	
+			<h3>过关方式</h3>
+			<ul>
+				<li class="disable" rel="1">单关</li>
+				<li class="disable" rel="2">2串1</li>
+				<li class="disable" rel="3">3串1</li>
+				<li class="disable" rel="4">4串1</li>
+				<li class="disable" rel="5">5串1</li>
+				<li class="disable" rel="6">6串1</li>
+				<li class="disable" rel="7">7串1</li>
+				<li class="disable" rel="8">8串1</li>
+			</ul>
+		</div>
+			
+		<div id="extra">
+			<ul>
+				<li><span class="l">投</span><input type="tel" id="bt" value="1" /><span class="r">倍</span></li>
+				<li><em id="agree" class="checked"> </em><span>同意<b id="treaty">《网上购彩协议》</b></span></li>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<section id="footer" class="bet-footer">
+	<!-- 页脚 -->
+	<span id="delall">清空</span>
+	<a href="#" id="submit" class="submit">
+		<span class="l">
+			支付金额:<em id="fee">0元</em><br />
+			奖金范围:<em id="award">0.00-0.00</em>
+		</span>
+		<span class="r">立即投注</span>
+	</a>
+</section>
+
+<!-- 比赛单元 -->
+<script type="text/template" id="ItemTemp">
+	<span rel="win" class="bet long {@if win}on{@/if}">${hostTeam}</span>
+	<span rel="even" class="bet short {@if even}on{@/if}">平</span>
+	<span rel="negative" class="bet long {@if negative}on{@/if}">${visTeam}</span>
+	<span class="hr"> </span>
+	<span class="dt short {@if isDt}on{@/if}">胆</span>
+</script>
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+	seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000050']
+        ]
+    });
+
+	function onDeviceReady(){
+		seajs.use('../../js/zqdc/zqdcbet', function(bet) {
+			bet.initialize();
+		});
+	}
+</script>
+</body>
+</html>

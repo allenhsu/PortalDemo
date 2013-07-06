@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+    @author: 函谷 
+    @version: 支持卡包以上客户端
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta charset="utf-8">
+<meta name="center-bar-item" id="alipayCenterBar" content="title=足球单场" />
+<meta name="right-bar-item" id="alipayRightBar" content="title=筛选,onclick=rightBar()" />
+<title>足球单场</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/sport.css?t=5" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="../../js/lib/sea.js"></script>
+<script charset="utf-8" src="../../js/lib/zepto.js"></script>
+<script charset="utf-8" src="../../js/lib/juicer.js"></script>
+<script charset="utf-8" src="../../js/lib/underscore.js"></script>
+<script charset="utf-8" src="../../js/lib/backbone.js"></script>
+<script charset="utf-8" src="../../js/config.js"></script>
+</head>
+
+<body>
+
+<section id="header">	
+	<!-- 页头 -->
+	<ul>
+		<li class="w1">赛事/截止</li>
+		<li class="w2">主胜(让球)</li>
+		<li class="w3">平</li>
+		<li class="w4">主负</li>
+	</ul>
+</section>
+
+<section id="content">
+	<!-- 页面可滚动区域 -->
+	<div>
+		<!-- 对阵容器 -->
+		<div id="match-box"></div>
+		<!-- loading -->
+		<div id="loading"><img src="../../images/loading.gif" /> 正在努力请求数据...</div>
+		<!-- more -->
+		<div class="hidden" id="more">点击查看更多</div>
+	</div>
+</section>
+
+<section id="footer" class="hidden">
+	<!-- 页脚 -->
+	<span id="delall">清空</span>
+	<a href="#" id="submit" class="submit">
+		<span class="l">已选0场比赛</span>
+		<span class="r">确定</span>
+	</a>
+</section>
+
+<!-- 比赛单元 -->
+<script type="text/template" id="ItemTemp">
+	<dt class="w1">
+		<p>${gameName}</p>
+		<p>${matchWeek}<s></s>${matchTime}</p>
+	</dt>
+	<dd class="win w2 {@if win}on{@/if}" rel="win">
+		<div class="box">
+			<p>
+				${hostTeam}{@if adjust > 0}<span class="neg">(${adjust})</span>{@else if adjust < 0}<span class="pos">(${adjust})</span>{@/if}
+			</p>
+			<p>SP<s></s><span class="sp">${winSp}</span></p>
+		</div>
+	</dd>
+	<dd class="even w3 {@if even}on{@/if}" rel="even">
+		<div class="box">
+			<p>VS</p>
+			<p>SP<s></s><span class="sp">${evenSp}</span></p>
+		</div>
+	</dd>
+	<dd class="negative w4 {@if negative}on{@/if}" rel="negative">
+		<div class="box">
+			<p>${visTeam}</p>
+			<p>SP<s></s><span class="sp">${negativeSp}</span></p>
+		</div>
+	</dd>
+</script>
+
+<script>
+    //配置时间戳，解决浏览器或者webview cache问题
+	seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000018']
+        ]
+    });
+    
+	function onDeviceReady(){
+		seajs.use('../../js/zqdc/zqdcmatch', function(match) {
+			match.initialize();
+		});
+	}
+</script>
+</body>
+</html>

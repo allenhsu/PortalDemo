@@ -1,0 +1,32 @@
+.hidden{display:none;}
+#p-wrapper{position:absolute;width:90%;top:50px;left:5%;height:280px;overflow:hidden;}
+
+.p-pannel{-webkit-backface-visibility: hidden;position:absolute;width:100%;padding-bottom:6px;}
+
+.p-list{-webkit-text-size-adjust:none;}
+
+
+.p-down , .p-up{height:40px;line-height:40px;}
+.p-down span , .p-up span {float:left;margin-left:20px;}
+.p-down s, .p-up s{float:left;margin-left:20px;
+-webkit-transition:-webkit-transform .2s ease-in-out;-webkit-transform:rotate(180deg);
+background:url(../image/jtx.png) no-repeat;display:block;width:21px;height:40px;background-size:21px 40px;}
+.p-up s{
+	-webkit-transform:rotate(0);
+}
+.p-up{margin-top:5px;}
+.p-down.p-rotate s{-webkit-transform:rotate(0);}
+.p-up.p-rotate s{-webkit-transform:rotate(180deg);}
+.p-down.p-loading s, .p-up.p-loading s{background:url(../image/loading.png) no-repeat;width:21px;height:21px;background-size:21px 21px;margin-top:9px;
+-webkit-transition:none;-webkit-transform:rotate(0);-webkit-transition-duration:0ms;
+
+	-webkit-animation-name:p-loading;
+	-webkit-animation-duration:2s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-timing-function:linear;
+}
+@-webkit-keyframes p-loading{
+	from { -webkit-transform:rotate(0deg) translateZ(0); }
+	to { -webkit-transform:rotate(360deg) translateZ(0); }
+}
+

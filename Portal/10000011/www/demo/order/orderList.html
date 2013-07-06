@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no;address=no;email=no">
+<meta charset="utf-8">
+<title>我的订单</title>
+<link href="../../css/reset.css" type="text/css" rel="stylesheet" />
+<link href="../../css/order.css?t=1" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="../../js/lib/sea.js"></script>
+<script type="text/javascript" src="../../js/lib/zepto.js"></script>
+<script type="text/javascript" src="../../js/lib/underscore.js"></script>
+<script type="text/javascript" src="../../js/lib/backbone.js"></script>
+<script type="text/javascript" src="../../js/config.js?t=2"></script>
+</head>
+<body>
+
+<section>
+	<section id="order-list" class="order-list">
+		<!-- This is the main container and nav for the order list. -->
+		<header class="hd">
+			<ul class="nav" id="order-nav">
+				<li class="all nav-item selected"  rel="1">全部订单</li>
+				<li class="lucky nav-item" rel="2">中奖订单</li>
+			</ul>
+		</header>
+		<section class="bd" id="scrollview-list-con">
+			<div>
+				<ul class="list" id="order-list-con"> </ul>
+				<div class="loading"><img src="../../images/loading.gif" />加载中</div>
+				<div class="more hidden">点击查看更多订单</div>
+			</div>
+		</section>
+	</section>
+</section>
+
+<!-- This template HTML will be used to render each order item. -->
+<script type="text/x-template" id="order-item-template">
+	<div class="logo">
+		<span class="<%= C.Config.lotteryTypeMap[lotteryType].cls %>"> </span>
+		<h3 <% if(C.Config.lotteryTypeMap[lotteryType].isS) print('class="s"') %>><%= C.Config.lotteryTypeMap[lotteryType].name %></h3>
+	</div>
+	<div class="detail">
+		<table>
+			<tr>
+				<th class="l">
+					<%
+						if (issue === '--') {
+							print(C.Config.lotteryTypeMap[lotteryType].name);		
+						} else if (issue !== '') {
+							print('第' + issue + '期');	
+						} 
+					%>
+				</th>
+				<th class="w5">
+					<% 
+						if (orderType == '5') {
+							var a = process.split('/');
+							print(a[0] + '人领取/共' + a[1] + '人');
+						} else {
+							if ((typeof presentType === 'undefined') || (presentType === 0)) {
+								print(C.Config.orderTypeMap[orderType]);
+								if(orderType == '2' || orderType == '4') {
+									print('<span>' + creatorNick + '</span>');
+								} else if(orderType == '3') {
+									print(' ' + process);	
+								}
+							} else {
+								print('赠送人<span>' + donorNick + '</span>');
+							}
+						}
+					%>
+				</th>
+			</tr>
+			<tr class="bd">
+				<td class="l"><%= Number(fee).toFixed(2) %> 元</td>
+				<% 
+				if(isNeedPay == '1')
+					print('<td rowspan="2"><a href="javascript:void(0);" class="pay">立即付款</a><a class="hidden aliPay" target="_blank"></a></td>');
+				else if(winFee > 0)
+					print('<td class="lucky">' + Number(winFee).toFixed(2) + '元</td>');
+				%>
+			</tr>
+			<tr class="ft">
+				<td class="l"><%= buyTime.slice(0, -3) %></td>
+				<% 
+				if(isNeedPay == '0') {
+					var str = (orderSubStatusStr == '') ? '' : '(' + orderSubStatusStr + ')';
+					print('<td>' + orderStatusStr + str + '</td>');
+				}
+				%>
+			</tr>
+		</table>
+		<s> </s>
+	</div>
+</script>
+
+<script>
+	//启动应用程序
+    //配置时间戳，解决浏览器或者webview cache问题
+    seajs.config({
+        map: [
+            [ /^(.*\.(?:css|js))(.*)$/i, '$1?000022']
+        ]
+    });
+	function onDeviceReady(){
+		seajs.use('../../js/order/orderList', function(orderList){
+			orderList.initialize();
+		});
+	}
+
+</script>
+</body>
+</html>
