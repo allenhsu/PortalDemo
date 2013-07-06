@@ -6,28 +6,30 @@
 //  Copyright (c) 2013 Allen Hsu. All rights reserved.
 //
 
-#import "CDVPlugin.h"
+#import <Cordova/CDVPlugin.h>
 
 @interface PLNavigation : CDVPlugin
 {
     NSString *callbackID;
 }
 
-- (void)setLeftItemAction:(id)arg1 withDict:(id)arg2;
-- (void)setLeftTitle:(id)arg1 withDict:(id)arg2;
-- (void)setLeftIcon:(id)arg1 withDict:(id)arg2;
-- (void)setRightItemAction:(id)arg1 withDict:(id)arg2;
-- (void)setCenterItemAction:(id)arg1 withDict:(id)arg2;
-- (void)setRightItemTitle:(id)arg1 withDict:(id)arg2;
-- (void)setCenterItemTitle:(id)arg1 withDict:(id)arg2;
-- (void)setRightTitle:(id)arg1 withDict:(id)arg2;
-- (void)setRightIcon:(id)arg1 withDict:(id)arg2;
-- (void)setSlaverightTitle:(id)arg1 withDict:(id)arg2;
-- (void)setSlaverightIcon:(id)arg1 withDict:(id)arg2;
-- (void)setDefaultBackFunction:(id)arg1 withDict:(id)arg2;
-- (void)popToRoot:(id)arg1 withDict:(id)arg2;
-- (void)popWindow:(id)arg1 withDict:(id)arg2;
-- (void)reportError:(id)arg1;
-- (void)pushWindow:(id)arg1 withDict:(id)arg2;
+@property(copy, nonatomic) NSString *callbackID;
+
+- (void)setLeftItemAction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setLeftTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setLeftIcon:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setRightItemAction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setCenterItemAction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setRightItemTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setCenterItemTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setRightTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setRightIcon:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setSlaverightTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setSlaverightIcon:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setDefaultBackFunction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)popToRoot:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)popWindow:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)reportError:(NSMutableArray*)arguments;
+- (void)pushWindow:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

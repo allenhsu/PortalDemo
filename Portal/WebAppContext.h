@@ -6,8 +6,26 @@
 //  Copyright (c) 2013 Allen Hsu. All rights reserved.
 //
 
-#import <Cordova/Cordova.h>
+#import <Cordova/CDVPlugin.h>
+#import "LoginViewController.h"
 
-@interface WebAppContext : CDVPlugin
+@interface WebAppContext : CDVPlugin <LoginViewDelegate>
+{
+    NSString *callbackID;
+}
+
+@property(copy, nonatomic) NSString *callbackID;
+
+- (void)dealloc;
+- (void)reportSucc:(NSMutableArray*)arguments;
+- (void)reportError:(NSMutableArray*)arguments;
+- (void)login:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)quite:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)userCache:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)go:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)pageState:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)externApp:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)isExtAppInstalled:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)startExtApp:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

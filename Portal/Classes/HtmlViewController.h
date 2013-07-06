@@ -32,5 +32,22 @@
 #endif
 
 @interface HtmlViewController : CDVViewController
+{
+    UIView *storeTitleView;
+    UIBarButtonItem *storeRightItem;
+    UIBarButtonItem *storeLeftItem;
+    NSDictionary *rightItemDict;
+    NSDictionary *leftItemDict;
+    BOOL firstTime;
+}
+
+@property(retain, nonatomic) UIBarButtonItem *storeLeftItem;
+@property(retain, nonatomic) UIBarButtonItem *storeRightItem;
+@property(retain, nonatomic) NSDictionary *rightItemDict;
+@property(retain, nonatomic) NSDictionary *leftItemDict;
+
+- (void)popWindow:(NSMutableArray*)arguments;
+- (void)popToRoot:(NSMutableArray*)arguments;
+- (void)pushWindow:(NSMutableArray*)arguments;
 
 @end

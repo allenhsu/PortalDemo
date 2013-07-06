@@ -10,6 +10,8 @@
 
 @interface LoginViewController ()
 
+- (void)didLogin:(id)sender;
+
 @end
 
 @implementation LoginViewController
@@ -23,6 +25,17 @@
     return self;
 }
 
+- (void)loadView
+{
+    [super loadView];
+    UIButton *loginButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    loginButton.titleLabel.text = @"登录";
+    [loginButton addTarget:self action:@selector(didLogin:) forControlEvents:UIControlEventTouchUpInside];
+    loginButton.frame = CGRectMake(10.0, 10.0, 300.0, 44.0);
+    [self.view addSubview:loginButton];
+    self.view.backgroundColor = [UIColor whiteColor];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -33,6 +46,13 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)didLogin:(id)sender
+{
+    if ([self.delegate respondsToSelector:@selector(loginViewControllerDidFinishLogin)]) {
+        [self.delegate loginViewControllerDidFinishLogin];
+    }
 }
 
 @end

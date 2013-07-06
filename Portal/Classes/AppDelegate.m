@@ -77,6 +77,7 @@
     viewController.useSplashScreen = NO;
     viewController.wwwFolderName = @"10000011/www";
     viewController.startPage = @"demo/index-alipay-native.html";
+//    viewController.startPage = @"demo/jczq/jczqmatch.html";
     
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = self.navigationController;

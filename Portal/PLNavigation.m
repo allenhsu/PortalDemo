@@ -6,89 +6,107 @@
 //  Copyright (c) 2013 Allen Hsu. All rights reserved.
 //
 
-#import "APAppDelegate.h"
+#import "AppDelegate.h"
 #import "PLNavigation.h"
+#import "HtmlViewController.h"
 
 @implementation PLNavigation
 
-- (void)setLeftItemAction:(id)arg1 withDict:(id)arg2
+@synthesize callbackID;
+
+- (void)dealloc
+{
+    [callbackID release];
+    [super dealloc];
+}
+
+- (void)setLeftItemAction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setLeftTitle:(id)arg1 withDict:(id)arg2
+- (void)setLeftTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setLeftIcon:(id)arg1 withDict:(id)arg2
+- (void)setLeftIcon:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setRightItemAction:(id)arg1 withDict:(id)arg2
+- (void)setRightItemAction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setCenterItemAction:(id)arg1 withDict:(id)arg2
+- (void)setCenterItemAction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setRightItemTitle:(id)arg1 withDict:(id)arg2
+- (void)setRightItemTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setCenterItemTitle:(id)arg1 withDict:(id)arg2
+- (void)setCenterItemTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setRightTitle:(id)arg1 withDict:(id)arg2
+- (void)setRightTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setRightIcon:(id)arg1 withDict:(id)arg2
+- (void)setRightIcon:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setSlaverightTitle:(id)arg1 withDict:(id)arg2
+- (void)setSlaverightTitle:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setSlaverightIcon:(id)arg1 withDict:(id)arg2
+- (void)setSlaverightIcon:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)setDefaultBackFunction:(id)arg1 withDict:(id)arg2
+- (void)setDefaultBackFunction:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
     
 }
 
-- (void)popToRoot:(id)arg1 withDict:(id)arg2
+- (void)popToRoot:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+{
+    if ([self.viewController isKindOfClass:[HtmlViewController class]] && arguments.count > 1) {
+        HtmlViewController *htmlViewController = (HtmlViewController *)self.viewController;
+        [htmlViewController popToRoot:arguments];
+    }
+}
+
+- (void)popWindow:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+{
+    if ([self.viewController isKindOfClass:[HtmlViewController class]] && arguments.count > 1) {
+        HtmlViewController *htmlViewController = (HtmlViewController *)self.viewController;
+        [htmlViewController popWindow:arguments];
+    }
+}
+
+- (void)reportError:(NSMutableArray*)arguments
 {
     
 }
 
-- (void)popWindow:(id)arg1 withDict:(id)arg2
+- (void)pushWindow:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
-    
-}
-
-- (void)reportError:(id)arg1
-{
-    
-}
-
-- (void)pushWindow:(id)arg1 withDict:(id)arg2
-{
-    callbackID = [arg1 pop];
+    if ([self.viewController isKindOfClass:[HtmlViewController class]] && arguments.count > 1) {
+        HtmlViewController *htmlViewController = (HtmlViewController *)self.viewController;
+        [htmlViewController pushWindow:arguments];
+    }
 }
 
 @end
