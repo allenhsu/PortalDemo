@@ -116,8 +116,11 @@
 
 - (void) webViewDidFinishLoad:(UIWebView*) theWebView
 {
-    NSString *jsFile = [[NSBundle mainBundle] pathForResource:@"cordovaios" ofType:@"txt"];
-    NSString* jsString = [NSString stringWithContentsOfFile:jsFile encoding:NSUTF8StringEncoding error:NULL];
+    static NSString* jsString = nil;
+    if (!jsString) {
+        NSString *jsFile = [[NSBundle mainBundle] pathForResource:@"cordovaios" ofType:@"txt"];
+        jsString = [[NSString alloc] initWithContentsOfFile:jsFile encoding:NSUTF8StringEncoding error:NULL];
+    }
     [theWebView stringByEvaluatingJavaScriptFromString:jsString];
     [theWebView stringByEvaluatingJavaScriptFromString:@"document.addEventListener(\"deviceready\", onDeviceReady, false)"];
     

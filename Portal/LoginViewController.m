@@ -29,7 +29,7 @@
 {
     [super loadView];
     UIButton *loginButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    loginButton.titleLabel.text = @"登录";
+    [loginButton setTitle:@"登录" forState:UIControlStateNormal];
     [loginButton addTarget:self action:@selector(didLogin:) forControlEvents:UIControlEventTouchUpInside];
     loginButton.frame = CGRectMake(10.0, 10.0, 300.0, 44.0);
     [self.view addSubview:loginButton];
